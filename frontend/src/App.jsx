@@ -7,7 +7,7 @@ import CallPage from "./pages/CallPage";
 import ChatPage from "./pages/ChatPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import OnboardingPage from "./pages/OnboardingPage";
-import FriendsPage from "./pages/FriendsPage";
+import MessagesPage from "./pages/MessagesPage";
 import { useThemeStore } from "./store/useThemeStore.js";
 import useAuthUser from "./hooks/useAuthUser.js";
 import PageLoader from "./components/PageLoader.jsx";
@@ -38,11 +38,11 @@ function App() {
             }
           />
           <Route
-            path="/friends"
+            path="/messages"
             element={
               isAuthenticated && isOnboarded ? (
                 <Layout showSidebar={true}>
-                  <FriendsPage />
+                  <MessagesPage />
                 </Layout>
               ) : (
                 <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
