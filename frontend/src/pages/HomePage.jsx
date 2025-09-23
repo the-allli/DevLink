@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 
 import { capitialize } from "../lib/utils";
-
-import FriendCard, { getLanguageFlag } from "../components/FriendCard";
+import { getLanguageFlag } from "../constants/index.jsx";
+import FriendCard from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
 const HomePage = () => {

@@ -9,7 +9,7 @@ import {
   ShipWheelIcon,
   ShuffleIcon,
 } from "lucide-react";
-import { LANGUAGES } from "../constants";
+import { LANGUAGES } from "../constants/index.jsx";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthUser();
