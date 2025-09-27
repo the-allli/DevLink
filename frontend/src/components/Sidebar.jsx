@@ -37,9 +37,6 @@ const Sidebar = () => {
         >
           <UsersIcon className="size-5 text-base-content opacity-70" />
           <span>Messages</span>
-          <span className="absolute right-2 top-3 bg-red-500 text-white text-xs font-semibold px-1.5 rounded-full">
-            1
-          </span>{" "}
         </Link>
       </nav>
 

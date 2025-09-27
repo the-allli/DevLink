@@ -28,9 +28,6 @@ const FriendsList = ({ friends, loadingFriends }) => {
                     <img src={friend.profilePic} alt={friend.fullName} />
                   </div>
                   <p>{friend.fullName}</p>
-                  <span className="absolute right-5 top-6 bg-red-500 text-white text-xs font-semibold px-1.5 rounded-full">
-                    1
-                  </span>
                 </div>
               </Link>
             ))}
