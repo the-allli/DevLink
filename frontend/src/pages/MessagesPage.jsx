@@ -9,7 +9,7 @@ const MessagesPage = () => {
     queryFn: getUserFriends,
   });
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <div className="w-1/4 bg-black text-white">
         <FriendsList friends={friends} loadingFriends={loadingFriends} />
       </div>
