@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptFriendRequest, getFriendRequests } from "../lib/api";
+import { acceptFriendRequest, getFriendRequests, markAllNotificationsSeen } from "../lib/api";
 import {
   BellIcon,
   ClockIcon,
@@ -7,6 +7,7 @@ import {
   UserCheckIcon,
 } from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
+import { useEffect } from "react";
 
 const NotificationsPage = () => {
   const queryClient = useQueryClient();
@@ -14,7 +15,23 @@ const NotificationsPage = () => {
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendRequests,
+    onSuccess: () => {
+      // ensure the cache keeps `seen: true` even after this page's fetch completes
+      queryClient.setQueryData(["friendRequests"], (old) => {
+        if (!old) return { incomingReqs: [], acceptedReqs: [], seen: true };
+        if (old.seen) return old;
+        return { ...old, seen: true };
+      });
+    },
   });
+
+  // Mark notifications as seen on page mount (server-side) and refresh unread count
+  useEffect(() => {
+    (async () => {
+      await markAllNotificationsSeen();
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    })();
+  }, [queryClient]);
 
   const { mutate: acceptRequestMutation, isPending } = useMutation({
     mutationFn: acceptFriendRequest,

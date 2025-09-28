@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import FriendRequest from "../models/FriendRequest.js";
+import Notification from "../models/Notification.js";
 
 export async function getRecommendedUsers(req, res) {
   try {
@@ -72,6 +73,18 @@ export async function sendFriendRequest(req, res) {
       recipient: recipientId,
     });
 
+    // Create notification for recipient: they received a friend request
+    try {
+      await Notification.create({
+        user: recipientId,
+        type: "friend_request_received",
+        actor: myId,
+        friendRequest: friendRequest._id,
+      });
+    } catch (e) {
+      console.error("Failed to create notification (friend_request_received):", e.message);
+    }
+
     res.status(201).json(friendRequest);
   } catch (error) {
     console.error("Error in sendFriendRequest controller", error.message);
@@ -106,6 +119,18 @@ export async function acceptFriendRequest(req, res) {
     await User.findByIdAndUpdate(friendRequest.recipient, {
       $addToSet: { friends: friendRequest.sender },
     });
+
+    // Create notification for original sender: their request was accepted
+    try {
+      await Notification.create({
+        user: friendRequest.sender,
+        type: "friend_request_accepted",
+        actor: friendRequest.recipient,
+        friendRequest: friendRequest._id,
+      });
+    } catch (e) {
+      console.error("Failed to create notification (friend_request_accepted):", e.message);
+    }
 
     res.status(200).json({ message: "Friend request accepted" });
   } catch (error) {

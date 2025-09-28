@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import { capitialize } from "../lib/utils";
-import { getLanguageFlag } from "../constants/index.jsx";
+import { getLanguageFlag, getLanguageIcon } from "../constants/index.jsx";
 import FriendCard from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
@@ -145,7 +145,7 @@ const HomePage = () => {
                           Native: {capitialize(user.nativeLanguage)}
                         </span>
                         <span className="badge badge-outline">
-                          {getLanguageFlag(user.learningLanguage)}
+                          {getLanguageIcon(user.learningLanguage)}
                           Learning: {capitialize(user.learningLanguage)}
                         </span>
                       </div>

@@ -163,6 +163,7 @@ export const THEMES = [
 ];
 
 export const LANGUAGES = [
+  "Urdu",
   "English",
   "Spanish",
   "French",
@@ -178,8 +179,19 @@ export const LANGUAGES = [
   "Turkish",
   "Dutch",
 ];
+export const PROGRAMMING_LANGUAGES = [
+    "C",
+    "C++",
+    "C#",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "PHP",
+    "Python",
+];
 
 export const LANGUAGE_TO_FLAG = {
+  urdu:"pk",
   english: "gb",
   spanish: "es",
   french: "fr",
@@ -214,3 +226,18 @@ export function getLanguageFlag(language) {
   return null;
 }
 
+export function getLanguageIcon(language) {
+    if (!language) return null;
+
+    const langLower = language.toLowerCase();
+    if (langLower) {
+        return (
+            <img
+                src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${language}/${language}-original.svg`}
+                alt={`${langLower} flag`}
+                className="h-3 mr-1 inline-block"
+            />
+        );
+    }
+    return null;
+}

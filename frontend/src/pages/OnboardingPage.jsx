@@ -9,7 +9,7 @@ import {
   ShipWheelIcon,
   ShuffleIcon,
 } from "lucide-react";
-import { LANGUAGES } from "../constants/index.jsx";
+import { LANGUAGES, PROGRAMMING_LANGUAGES } from "../constants/index.jsx";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthUser();
@@ -167,7 +167,7 @@ const OnboardingPage = () => {
                   className="select select-bordered w-full"
                 >
                   <option value="">Select language you're learning</option>
-                  {LANGUAGES.map((lang) => (
+                  {PROGRAMMING_LANGUAGES.map((lang) => (
                     <option key={`learning-${lang}`} value={lang.toLowerCase()}>
                       {lang}
                     </option>

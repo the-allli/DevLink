@@ -123,3 +123,24 @@ export async function getStreamToken() {
     return null;
   }
 }
+
+// Notifications API (server-side persisted)
+export async function getNotifications() {
+  try {
+    const response = await axiosInstance.get("/notifications");
+    return response.data; // { items, unreadCount }
+  } catch (error) {
+    console.log("Error in getNotifications:", error);
+    return { items: [], unreadCount: 0 };
+  }
+}
+
+export async function markAllNotificationsSeen() {
+  try {
+    const response = await axiosInstance.put("/notifications/mark-seen");
+    return response.data; // { updated }
+  } catch (error) {
+    console.log("Error in markAllNotificationsSeen:", error);
+    return null;
+  }
+}

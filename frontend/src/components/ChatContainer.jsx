@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 
 import ChatLoader from "../components/ChatLoader";
 import CallButton from "../components/CallButton";
+import OnlineChannelAvatar from "../components/OnlineChannelAvatar";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -36,12 +37,6 @@ const ChatContainer = () => {
   });
 
   useEffect(() => {
-    // if no target user, skip initialization
-    if (!targetUserId) {
-      setLoading(false);
-      return;
-    }
-
     const initChat = async () => {
       if (!tokenData?.token || !authUser) return;
 
@@ -57,15 +52,26 @@ const ChatContainer = () => {
           tokenData.token
         );
 
-        const channelId = [authUser._id, targetUserId].sort().join("-");
-        const currChannel = client.channel("messaging", channelId, {
-          members: [authUser._id, targetUserId],
-        });
-
-        await currChannel.watch();
+        // expose client globally so other components (e.g., FriendsList) can access presence
+        if (typeof window !== "undefined") {
+          window.streamClient = client;
+          try {
+            window.dispatchEvent(new Event("stream-client-ready"));
+          } catch (e) {}
+        }
 
         setChatClient(client);
-        setChannel(currChannel);
+
+        if (targetUserId) {
+          const channelId = [authUser._id, targetUserId].sort().join("-");
+          const currChannel = client.channel("messaging", channelId, {
+            members: [authUser._id, targetUserId],
+          });
+          await currChannel.watch();
+          setChannel(currChannel);
+        } else {
+          setChannel(null);
+        }
       } catch (error) {
         console.error("Error initializing chat:", error);
         toast.error("Could not connect to chat. Please try again.");
@@ -101,13 +107,13 @@ const ChatContainer = () => {
 
   // case 3: chat ready
   return (
-    <div className="">
+    <div className="h-full">
       <Chat client={chatClient}>
         <Channel channel={channel}>
           <div className="w-full relative">
             <CallButton handleVideoCall={handleVideoCall} />
             <Window>
-              <ChannelHeader />
+              <ChannelHeader Avatar={OnlineChannelAvatar} />
               <MessageList />
               <MessageInput focus />
             </Window>

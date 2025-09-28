@@ -1,10 +1,25 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { BellIcon, LogOutIcon, ShipWheelIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
+import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "../lib/api";
 
 const Navbar = () => {
   const { logoutMutation } = useLogout();
+  const location = useLocation();
+  const onNotificationsPage = location?.pathname?.startsWith("/notifications");
+
+  // Fetch notifications for badge counter (server-side persisted)
+  const { data: notificationsData } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: getNotifications,
+    refetchInterval: onNotificationsPage ? false : 5000,
+    refetchOnWindowFocus: false,
+    staleTime: 2000,
+  });
+
+  const totalNotifications = notificationsData?.unreadCount || 0;
 
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
@@ -22,9 +37,16 @@ const Navbar = () => {
 
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
             <Link to={"/notifications"}>
-              <button className="btn btn-ghost btn-circle">
-                <BellIcon className=" h-6 w-6 text-base-content opacity-70" />
-              </button>
+              <div className="indicator">
+                {totalNotifications > 0 && (
+                  <span className="indicator-item badge badge-primary text-xs">
+                    {totalNotifications}
+                  </span>
+                )}
+                <button className="btn btn-ghost btn-circle">
+                  <BellIcon className=" h-6 w-6 text-base-content opacity-70" />
+                </button>
+              </div>
             </Link>
           </div>
 
