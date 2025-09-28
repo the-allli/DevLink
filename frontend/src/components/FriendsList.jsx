@@ -10,7 +10,10 @@ const FriendsList = ({ friends, loadingFriends }) => {
   const [clientReadyVersion, setClientReadyVersion] = useState(0);
 
   // Keep a stable list of friend IDs
-  const friendIds = useMemo(() => friends.map((f) => f._id).filter(Boolean), [friends]);
+  const friendIds = useMemo(
+    () => friends.map((f) => f._id).filter(Boolean),
+    [friends]
+  );
 
   // Listen for when a connected Stream client is available
   useEffect(() => {
@@ -34,7 +37,11 @@ const FriendsList = ({ friends, loadingFriends }) => {
 
     const fetchPresence = async () => {
       try {
-        const res = await client.queryUsers({ id: { $in: friendIds } }, undefined, { presence: true });
+        const res = await client.queryUsers(
+          { id: { $in: friendIds } },
+          undefined,
+          { presence: true }
+        );
         const map = {};
         res.users.forEach((u) => {
           map[u.id] = !!u.online;
@@ -60,7 +67,8 @@ const FriendsList = ({ friends, loadingFriends }) => {
 
     return () => {
       try {
-        if (unsub && typeof unsub.unsubscribe === "function") unsub.unsubscribe();
+        if (unsub && typeof unsub.unsubscribe === "function")
+          unsub.unsubscribe();
       } catch (e) {}
     };
   }, [friendIds, clientReadyVersion]);
@@ -85,7 +93,9 @@ const FriendsList = ({ friends, loadingFriends }) => {
             const members = Object.keys(ch?.state?.members || {});
             const other = members.find((m) => m !== authUser._id);
             if (!other) return;
-            const cnt = ch.countUnread ? ch.countUnread() : (ch?.state?.unread_count ?? 0);
+            const cnt = ch.countUnread
+              ? ch.countUnread()
+              : ch?.state?.unread_count ?? 0;
             if (cnt > 0) map[other] = cnt;
           } catch (e) {}
         });
@@ -113,13 +123,14 @@ const FriendsList = ({ friends, loadingFriends }) => {
 
     return () => {
       try {
-        if (unsub && typeof unsub.unsubscribe === "function") unsub.unsubscribe();
+        if (unsub && typeof unsub.unsubscribe === "function")
+          unsub.unsubscribe();
       } catch (e) {}
     };
   }, [authUser, clientReadyVersion]);
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-full">
       <ul className="space-y-2">
         {/* Map through friends data and display each friend */}
         {loadingFriends ? (
@@ -131,7 +142,8 @@ const FriendsList = ({ friends, loadingFriends }) => {
         ) : (
           <div className="">
             {friends.map((friend) => {
-              const isOnline = onlineMap[friend._id] || friend?.online || friend?.isOnline;
+              const isOnline =
+                onlineMap[friend._id] || friend?.online || friend?.isOnline;
               const unread = unreadMap[friend._id] || 0;
               return (
                 <Link
@@ -143,12 +155,18 @@ const FriendsList = ({ friends, loadingFriends }) => {
                     className="relative pl-5 pt-2 flex items-center space-x-2"
                     key={friend._id}
                   >
-                    <div className={`avatar size-12 ${isOnline ? "avatar-online" : "avatar-offline"}`}>
+                    <div
+                      className={`avatar size-12 ${
+                        isOnline ? "avatar-online" : "avatar-offline"
+                      }`}
+                    >
                       <img src={friend.profilePic} alt={friend.fullName} />
                     </div>
                     <p>{friend.fullName}</p>
                     {unread > 0 && (
-                      <span className="badge badge-primary ml-auto">{unread}</span>
+                      <span className="badge badge-primary ml-auto">
+                        {unread}
+                      </span>
                     )}
                   </div>
                 </Link>

@@ -107,7 +107,7 @@ const ChatContainer = () => {
 
   // case 3: chat ready
   return (
-    <div className="h-full">
+    <div className="h-[100vh]">
       <Chat client={chatClient}>
         <Channel channel={channel}>
           <div className="w-full relative">
